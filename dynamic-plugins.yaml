@@ -2,12 +2,10 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: dynamic-plugins-rhdh
-  labels: 
-    # This needs to be set to the value of the 'EXT_CONF_SYNC_backstage' env var in the operator container, which is 'true' if unset
+  labels:
     rhdh.redhat.com/ext-config-sync: "true"
-  annotations: 
+  annotations:
     rhdh.redhat.com/backstage-name: "developer-hub"
-
 data:
   dynamic-plugins.yaml: |
     includes:
@@ -19,3 +17,6 @@ data:
       - package: 'http://plugin-registry:8080/internal-backstage-plugin-mta-backend-dynamic-0.1.0.tgz'
         disabled: false
         integrity: 'sha512-bkrOAY++IjbnxF2l0frz2tR5XLaq24RReJ+f/cdoLm5kKZEFbOeGul8T/wACYHDKu5L87J2ghL5Sw2Kq4W0eyA=='
+      - package: 'http://plugin-registry:8080/internal-backstage-plugin-scaffolder-backend-module-mta-dynamic-0.1.0.tgz'
+        disabled: false
+        integrity: 'sha512-EeEhDNDOCwlJ60tGgv6R9OmtbMkn3FpVznI/ogRSfwz5pROzixaAIzGIJHwzWgGCPY7wOAk3l4EXT+Bf+Qbj6A=='
