@@ -2757,7 +2757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/backend-common@npm:^0.21.7":
+"@backstage/backend-common@npm:^0.21.6, @backstage/backend-common@npm:^0.21.7":
   version: 0.21.7
   resolution: "@backstage/backend-common@npm:0.21.7"
   dependencies:
@@ -3321,7 +3321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.26.11, @backstage/cli@npm:^0.26.3":
+"@backstage/cli@npm:^0.26.11, @backstage/cli@npm:^0.26.2, @backstage/cli@npm:^0.26.3":
   version: 0.26.11
   resolution: "@backstage/cli@npm:0.26.11"
   dependencies:
@@ -4753,7 +4753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-scaffolder-node@npm:^0.4.8":
+"@backstage/plugin-scaffolder-node@npm:^0.4.2, @backstage/plugin-scaffolder-node@npm:^0.4.8":
   version: 0.4.8
   resolution: "@backstage/plugin-scaffolder-node@npm:0.4.8"
   dependencies:
@@ -6782,6 +6782,21 @@ __metadata:
     supertest: ^6.2.4
     winston: ^3.2.1
     yn: ^4.0.0
+  languageName: unknown
+  linkType: soft
+
+"@internal/backstage-plugin-scaffolder-backend-module-mta@workspace:plugins/scaffolder-backend-module-mta":
+  version: 0.0.0-use.local
+  resolution: "@internal/backstage-plugin-scaffolder-backend-module-mta@workspace:plugins/scaffolder-backend-module-mta"
+  dependencies:
+    "@backstage/backend-common": ^0.21.6
+    "@backstage/backend-dynamic-feature-service": ^0.2.15
+    "@backstage/backend-plugin-api": ^0.6.17
+    "@backstage/catalog-client": ^1.6.5
+    "@backstage/cli": ^0.26.2
+    "@backstage/plugin-scaffolder-node": ^0.4.2
+    "@janus-idp/cli": ^1.13.0
+    openid-client: ^5.6.5
   languageName: unknown
   linkType: soft
 
