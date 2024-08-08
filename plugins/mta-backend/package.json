@@ -51,6 +51,7 @@
   "files": [
     "dist",
     "dist-dynamic/*.*",
-    "dist-dynamic/dist/**"
+    "dist-dynamic/dist/**",
+    "migrations/**/*"
   ]
 }
