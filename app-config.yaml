@@ -49,43 +49,7 @@ mta:
     realm: tackle 
     secret: backstage-provider-secret
     clientID: backstage-provider
-  # visibility: frontend
 
-# integrations:
-#   github:
-#     - host: github.com
-#       # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
-#       # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
-#       token: ${GITHUB_TOKEN}
-#     ### Example for how to add your GitHub Enterprise instance using the API:
-#     # - host: ghe.example.net
-#     #   apiBaseUrl: https://ghe.example.net/api/v3
-#     #   token: ${GHE_TOKEN}
-# proxy:
-#   '/mta-proxy':
-#     # target: 'https://mta-openshift-mta.ibolton-dev-cluster-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud'
-#     # target: 'https://mta-openshift-mta.ibolton-dev-cluster-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud'
-#     target: 'https://mta-openshift-mta.mycluster-wdc04-b3c-4x16-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud'
-#     changeOrigin: true
-#     secure: true
-#     headers:
-#       Authorization: 'Bearer ${MTA_AUTH_TOKEN}'  # This should be set in your environment variables
-
-# proxy:
-#   skipInvalidProxies: true
-#   endpoints:
-#     {}
-  ### Example for how to add a proxy endpoint for the frontend.
-  ### A typical reason to do this is to handle HTTPS and CORS for internal services.
-  # endpoints:
-  #   '/test':
-  #     target: 'https://example.com'
-  #     changeOrigin: true
-
-# Reference documentation http://backstage.io/docs/features/techdocs/configuration
-# Note: After experimenting with basic setup, use CI/CD to generate docs
-# and an external cloud storage when deploying TechDocs for production use-case.
-# https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
 techdocs:
   builder: 'local' # Alternatives - 'external'
   generator:
@@ -94,17 +58,12 @@ techdocs:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
 auth:
-  # see https://backstage.io/docs/auth/ to learn about auth providers
   providers:
-    # See https://backstage.io/docs/auth/guest/provider
     guest: {} 
-      # dangerouslyAllowOutsideDevelopment: true
 
   environment: development
 
 scaffolder: {}
-  # see https://backstage.io/docs/features/software-templates/configuration for software template options
-
 catalog:
   import:
     entityFilename: catalog-info.yaml
@@ -112,44 +71,11 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
       target: ../../examples/entities.yaml
 
-    # # Local example template
-    # - type: file
-    #   target: ./plugins/test-template.yaml
-    #   rules:
-    #     - allow: [Template]
 
     - type: file
       target: ../../examples/template/create-application-template.yaml
       rules:
         - allow: [Template]
-    # - type: file
-    #   target: ../../examples/template/run-analysis-template.yaml
-    #   rules:
-    #     - allow: [Template]
-
-    # - type: file
-    #   target: ../../examples/template/analysis-template-test.yaml
-    #   rules:
-    #     - allow: [Template]
-
-    # # Local example organizational data
-    # - type: file
-    #   target: ../../examples/org.yaml
-    #   rules:
-    #     - allow: [User, Group]
-
-    ## Uncomment these lines to add more example data
-    # - type: url
-    #   target: file:///Users/ibolton/Projects/backstage/backstage/packages/catalog-model/examples/
-    # - type: url
-    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
-
-    ## Uncomment these lines to add an example org
-    # - type: url
-    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
-    #   rules:
-    #     - allow: [User, Group]

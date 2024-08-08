@@ -30,3 +30,19 @@ data:
       providers:
         guest:
           dangerouslyAllowOutsideDevelopment: true
+
+    catalog:
+      import:
+        entityFilename: catalog-info.yaml
+        pullRequestBranchName: backstage-integration
+      rules:
+        - allow: [Component, System, API, Resource, Location]
+      locations:
+        - type: url 
+          target: ../../examples/entities.yaml
+
+
+        - type: file
+          target: create-application-template.yaml
+          rules:
+            - allow: [Template]
