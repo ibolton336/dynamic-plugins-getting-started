@@ -3339,7 +3339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/cli@npm:^0.26.11, @backstage/cli@npm:^0.26.2, @backstage/cli@npm:^0.26.3":
+"@backstage/cli@npm:^0.26.11":
   version: 0.26.11
   resolution: "@backstage/cli@npm:0.26.11"
   dependencies:
@@ -6787,7 +6787,7 @@ __metadata:
     "@backstage/config": ^1.2.0
     "@backstage/plugin-auth-node": ^0.4.17
     "@backstage/plugin-catalog-node": ^1.12.4
-    "@janus-idp/cli": ^1.13.0
+    "@janus-idp/cli": ^1.11.1
     "@types/express": "*"
     "@types/supertest": ^2.0.12
     express: ^4.17.1
@@ -6811,7 +6811,7 @@ __metadata:
     "@backstage/backend-dynamic-feature-service": ^0.2.15
     "@backstage/backend-plugin-api": ^0.6.17
     "@backstage/catalog-client": ^1.6.5
-    "@backstage/cli": ^0.26.2
+    "@backstage/cli": ^0.26.11
     "@backstage/plugin-scaffolder-node": ^0.4.2
     "@janus-idp/cli": ^1.13.0
     openid-client: ^5.6.5
@@ -6859,7 +6859,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@janus-idp/cli@npm:^1.13.0":
+"@janus-idp/cli@npm:^1.11.1, @janus-idp/cli@npm:^1.13.0":
   version: 1.13.0
   resolution: "@janus-idp/cli@npm:1.13.0"
   dependencies:
@@ -14008,7 +14008,7 @@ __metadata:
   dependencies:
     "@backstage/app-defaults": ^1.5.4
     "@backstage/catalog-model": ^1.4.5
-    "@backstage/cli": ^0.26.3
+    "@backstage/cli": ^0.26.11
     "@backstage/core-app-api": ^1.12.4
     "@backstage/core-components": ^0.14.4
     "@backstage/core-plugin-api": ^1.9.2
@@ -14712,7 +14712,7 @@ __metadata:
     "@backstage/backend-defaults": ^0.3.3
     "@backstage/backend-dynamic-feature-service": ^0.2.15
     "@backstage/backend-tasks": ^0.5.22
-    "@backstage/cli": ^0.26.3
+    "@backstage/cli": ^0.26.11
     "@backstage/config": ^1.2.0
     "@backstage/plugin-app-backend": ^0.3.65
     "@backstage/plugin-auth-backend": ^0.22.4
@@ -30419,7 +30419,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root@workspace:."
   dependencies:
-    "@backstage/cli": ^0.26.3
+    "@backstage/cli": ^0.26.11
     "@backstage/e2e-test-utils": ^0.1.1
     "@playwright/test": ^1.32.3
     "@spotify/prettier-config": ^12.0.0
