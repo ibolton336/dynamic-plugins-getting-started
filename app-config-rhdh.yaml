@@ -39,8 +39,9 @@ data:
         - allow: [Component, System, API, Resource, Location]
       locations:
         - type: url 
-          target: ../../examples/entities.yaml
-
+          target: https://github.com/ibolton336/dynamic-plugins-getting-started/blob/main/create-application-template.yaml
+          rules:
+            - allow: [Template]
 
         - type: file
           target: create-application-template.yaml
