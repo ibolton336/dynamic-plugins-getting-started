@@ -30,6 +30,29 @@ data:
       providers:
         guest:
           dangerouslyAllowOutsideDevelopment: true
+    dynamic-plugins:
+      frontend: 
+        internal.backstage-plugin-mta-frontend:
+          dynamicRoutes:
+            - path: /mta
+              importName: EntityMTAContent 
+              menuItem:
+                text: 'MTA'
+          mountPoints:
+            - mountPoint: entity.page.overview/cards
+              importName: EntityMTAContent
+              config:
+                layout:
+                  gridColumnEnd:
+                    lg: 'span 4'
+                    md: 'span 6'
+                    xs: 'span 12'
+                if:
+                  allOf:
+                    - isKind: component 
+                    - isType: service
+
+
 
     catalog:
       import:
@@ -47,3 +70,4 @@ data:
           target: create-application-template.yaml
           rules:
             - allow: [Template]
+

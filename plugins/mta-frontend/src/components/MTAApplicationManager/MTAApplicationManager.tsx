@@ -1,0 +1,61 @@
+import React from 'react';
+import { Grid, Tab, Tabs, Box, Typography } from '@material-ui/core';
+import { ResponseErrorPanel } from '@backstage/core-components';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { AppCard } from '../AppCard/AppCard';
+import { AnalysisPage } from '../AnalysisPage/AnalysisPage';
+
+export const MTAApplicationManager = () => {
+  const entity = useEntity();
+  const [tab, setTab] = React.useState(0);
+
+  const handleTabChange = (newValue: number) => {
+    setTab(newValue);
+  };
+
+  if (!entity) {
+    return (
+      <ResponseErrorPanel
+        title="No entity context available"
+        error={
+          new Error('This component must be used within an entity context.')
+        }
+      />
+    );
+  }
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      {/* Display the application name and some details */}
+      <Typography variant="h5" gutterBottom>
+        Application Name: {entity.entity.metadata.name}
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        Unique ID: {entity.entity.metadata.uid}
+      </Typography>
+
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginBottom: 10 }}>
+        <Tabs
+          value={tab}
+          onChange={(_, val) => handleTabChange(val)}
+          aria-label="Application tabs"
+        >
+          <Tab label="Application Details" />
+          <Tab label="Analysis" />
+          {/* <Tab label="Effort" /> */}
+        </Tabs>
+      </Box>
+
+      {/* Conditional rendering of tab panels */}
+      <Grid item xs={12} role="tabpanel" hidden={tab !== 0} id="tabpanel-0">
+        <AppCard />
+      </Grid>
+      <Grid item xs={12} role="tabpanel" hidden={tab !== 1} id="tabpanel-1">
+        <AnalysisPage />
+      </Grid>
+      {/* <Grid item xs={12} role="tabpanel" hidden={tab !== 1} id={`tabpanel-1`}>
+        </>
+      </Grid> */}
+    </Box>
+  );
+};

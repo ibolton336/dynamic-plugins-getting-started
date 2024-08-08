@@ -13,7 +13,10 @@ echo ""
 # set -x
 
 MTA_BACKEND_INTEGRITY_HASH=$(npm pack plugins/mta-backend/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "mta-Backend plugin integrity Hash: $MTA_BACKEND_INTEGRITY_HASH"
+echo "mta-backend plugin integrity Hash: $MTA_BACKEND_INTEGRITY_HASH"
+
+MTA_FRONTEND_INTEGRITY_HASH=$(npm pack plugins/mta-frontend/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
+echo "mta-frontend plugin integrity Hash: $MTA_FRONTEND_INTEGRITY_HASH"
 
 CATALOG_BACKEND_MODULE_INTEGRITY_HASH=$(npm pack plugins/catalog-backend-module-mta-entity-provider/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
 echo "Catalog module plugin integrity Hash: $CATALOG_BACKEND_MODULE_INTEGRITY_HASH"
