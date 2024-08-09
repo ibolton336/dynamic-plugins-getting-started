@@ -16,6 +16,13 @@ yarn && yarn run tsc && yarn run build:all
 DYNAMIC_PLUGIN_ROOT_DIR=./deploy
 mkdir -p $DYNAMIC_PLUGIN_ROOT_DIR
 
+yarn --cwd plugins/mta-backend export-dynamic 
+yarn --cwd plugins/mta-frontend export-dynamic
+yarn --cwd plugins/catalog-backend-module-mta-entity-provider export-dynamic
+yarn --cwd plugins/scaffolder-backend-module-mta export-dynamic
+echo "Dynamic plugins exported"
+
+
 echo "Packaging up plugin static assets"
 MTA_BACKEND_INTEGRITY_HASH=$(npm pack plugins/mta-backend/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
 echo "mta-backend plugin integrity Hash: $MTA_BACKEND_INTEGRITY_HASH"
@@ -29,8 +36,6 @@ echo "Catalog module plugin integrity Hash: $CATALOG_BACKEND_MODULE_INTEGRITY_HA
 SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH=$(npm pack plugins/scaffolder-backend-module-mta/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
 echo "Scaffolder module plugin integrity Hash: $SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH"
 
-SIMPLE_CHAT_INTEGRITY_HASH=$(npm pack plugins/simple-chat/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "Simple chat plugin integrity Hash: $SIMPLE_CHAT_INTEGRITY_HASH"
 
 echo "Plugin .tgz files:"
 ls -l $DYNAMIC_PLUGIN_ROOT_DIR
@@ -60,50 +65,12 @@ data:
       - package: 'http://plugin-registry:8080/internal-backstage-plugin-mta-frontend-dynamic-0.1.0.tgz'
         disabled: false
         integrity: '$MTA_FRONTEND_INTEGRITY_HASH'
-        pluginConfig:
-          dynamic-plugins:
-            frontend:
-              internal.backstage-plugin-mta-frontend:
-                dynamicRoutes:
-                  - path: /mta
-                    importName: EntityMTAContent 
-                    menuItem:
-                      text: 'MTA'
-                mountPoints:
-                  - mountPoint: entity.page.overview/cards
-                    importName: EntityMTAContent
-                    config:
-                      layout:
-                        gridColumnEnd:
-                          lg: 'span 4'
-                          md: 'span 6'
-                          xs: 'span 12'
-                      if:
-                        allOf:
-                          - isKind: component 
-                          - isType: service
       - package: 'http://plugin-registry:8080/internal-backstage-plugin-catalog-backend-module-mta-entity-provider-dynamic-0.1.0.tgz'
         disabled: false
         integrity: '$CATALOG_BACKEND_MODULE_INTEGRITY_HASH'
       - package: 'http://plugin-registry:8080/internal-backstage-plugin-scaffolder-backend-module-mta-dynamic-0.1.0.tgz'
         disabled: false
         integrity: '$SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH'
-      - package: 'http://plugin-registry:8080/internal-backstage-plugin-simple-chat-dynamic-0.1.0.tgz'
-        disabled: false
-        integrity: '$SIMPLE_CHAT_INTEGRITY_HASH'
-        pluginConfig:
-          dynamic-plugins:
-            frontend:
-              internal.backstage-plugin-simple-chat:
-                appIcons:
-                  - name: chatIcon
-                    importName: ChatIcon
-                dynamicRoutes:
-                  - path: /simple-chat
-                    importName: SimpleChatPage
-                    menuItem:
-                      text: 'Simple Chat'
-                      icon: chatIcon
 EOF
 
 # Step 8: Execute additional setup scripts and apply Kubernetes resources

@@ -2,21 +2,23 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: app-config-rhdh
-  labels: 
+  labels:
     # This needs to be set to the value of the 'EXT_CONF_SYNC_backstage' env var in the operator container, which is 'true' if unset
-    rhdh.redhat.com/ext-config-sync: "true"
-  annotations: 
-    rhdh.redhat.com/backstage-name: "developer-hub"
+    rhdh.redhat.com/ext-config-sync: 'true'
+  annotations:
+    rhdh.redhat.com/backstage-name: 'developer-hub'
 data:
   app-config-rhdh.yaml: |-
     app:
       title: Red Hat Developer Hub - Getting Started
-      baseUrl: https://backstage-developer-hub-local-backtage.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
-
+      baseUrl: https://backstage-developer-hub-local-backstage.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud/
     backend:
-      baseUrl: https://backstage-developer-hub-local-backtage.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+      baseUrl: https://backstage-developer-hub-local-backstage.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud/
       cors:
-        origin: https://backstage-developer-hub-local-backtage.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
+        origin: https://backstage-developer-hub-local-backstage.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud/ 
+        methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+        credentials: true
+
 
     mta:
       url: https://tackle-konveyor-tackle.ibolton-3626522b15eedb880d7b99992e225c1b-0000.us-east.containers.appdomain.cloud
@@ -26,29 +28,13 @@ data:
         clientID: backstage-provider
 
     auth:
-      environment: development
       providers:
-        guest:
+        guest: 
           dangerouslyAllowOutsideDevelopment: true
-    dynamic-plugins:
-      frontend: 
-        internal.backstage-plugin-simple-chat:
-          appIcons:
-            - name: chatIcon
-              importName: ChatIcon
-          dynamicRoutes:
-            - path: /simple-chat
-              importName: SimpleChatPage
-              menuItem:
-                text: 'Simple Chat'
-                icon: chatIcon
 
+    dynamicPlugins:
+      frontend: 
         internal.backstage-plugin-mta-frontend:
-          dynamicRoutes:
-            - path: /mta
-              importName: EntityMTAContent 
-              menuItem:
-                text: 'MTA'
           mountPoints:
             - mountPoint: entity.page.overview/cards
               importName: EntityMTAContent
@@ -62,9 +48,6 @@ data:
                   allOf:
                     - isKind: component 
                     - isType: service
-
-
-
     catalog:
       import:
         entityFilename: catalog-info.yaml
@@ -81,4 +64,3 @@ data:
           target: create-application-template.yaml
           rules:
             - allow: [Template]
-

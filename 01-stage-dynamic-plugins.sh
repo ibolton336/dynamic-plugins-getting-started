@@ -24,8 +24,6 @@ echo "Catalog module plugin integrity Hash: $CATALOG_BACKEND_MODULE_INTEGRITY_HA
 SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH=$(npm pack plugins/scaffolder-backend-module-mta/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
 echo "Scaffolder module plugin integrity Hash: $SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH"
 
-SIMPLE_CHAT_INTEGRITY_HASH=$(npm pack plugins/simple-chat/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity') &&
-    echo "Simple chat plugin integrity Hash: $SIMPLE_CHAT_INTEGRITY_HASH"
 
 echo ""
 echo "Plugin .tgz files:"
