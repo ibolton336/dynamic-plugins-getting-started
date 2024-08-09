@@ -8,6 +8,8 @@ import { Config } from '@backstage/config';
 import { IdentityApi } from '@backstage/plugin-auth-node';
 import { Logger } from 'winston';
 import { Issuer, generators } from 'openid-client';
+import { isTokenExpired } from '../utils';
+import { DataBaseEntityApplicationStorage } from '../database/storage';
 
 export interface RouterOptions {
   logger: Logger;
@@ -20,8 +22,11 @@ export interface RouterOptions {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, identity, cache } = options;
+  const { logger, config, database, identity, cache } = options;
 
+  const dbClient = await database.getClient();
+  const entityApplicationStorage =
+    await DataBaseEntityApplicationStorage.create(dbClient, logger);
   const cacheClient = await cache.getClient();
   const frontEndBaseURL = config.getString('app.baseUrl');
   const backstageBaseURL = config.getString('backend.baseUrl');
@@ -65,6 +70,10 @@ export async function createRouter(
     cacheClient.set(user, tokenSet.access_token, {
       ttl: tokenSet.expires_in ?? 60 * 1000,
     });
+    entityApplicationStorage.saveRefreshTokenForUser(
+      user,
+      tokenSet.refresh_token,
+    );
     response.redirect(continueTo?.toString() ?? frontEndBaseURL);
   });
 
@@ -96,16 +105,36 @@ export async function createRouter(
     logger.info(`here: ${u.toString()}`);
     let accessToken = await cacheClient.get(String(id));
 
+    const refreshToken = await entityApplicationStorage.getRefreshTokenForUser(
+      String(id),
+    );
+
+    if (refreshToken) {
+      const expired = isTokenExpired(refreshToken.toString());
+      if (expired) {
+        console.log('Refresh token has expired. Redirecting to login.');
+        const authorizationURL = authClient.authorizationUrl({
+          redirect_uri: u.toString(),
+          code_challenge,
+          code_challenge_method: 'S256',
+        });
+        response.statusCode = 401;
+        response.json({ loginURL: authorizationURL });
+        return;
+      }
+    }
+
     console.log({
       backstageBaseURL,
       frontEndBaseURL,
       requestHeaders: request.headers,
       referer: request.headers.referer,
       accessToken,
+      refreshToken,
       u: u.toString(),
       id,
     });
-    if (!accessToken) {
+    if (!accessToken && !refreshToken) {
       console.log('u.toString', u.toString());
       console.log('u redirect uri!', u);
       const authorizationURL = authClient.authorizationUrl({
@@ -119,8 +148,8 @@ export async function createRouter(
       response.json({ loginURL: authorizationURL });
       return;
     }
-    if (!accessToken) {
-      const tokenSet = await authClient.refresh(String(accessToken));
+    if (!accessToken && refreshToken) {
+      const tokenSet = await authClient.refresh(String(refreshToken));
       if (!tokenSet || !tokenSet.access_token) {
         const authorizationURL = authClient.authorizationUrl({
           redirect_uri: u.toString(),
@@ -136,6 +165,12 @@ export async function createRouter(
       cacheClient.set(String(id), String(tokenSet.access_token), {
         ttl: tokenSet.expires_in ?? 60 * 1000,
       });
+      if (tokenSet.refresh_token && tokenSet.refresh_token !== refreshToken) {
+        entityApplicationStorage.saveRefreshTokenForUser(
+          String(id),
+          tokenSet.refresh_token,
+        );
+      }
     }
     response.locals.accessToken = accessToken;
     next();
@@ -163,6 +198,10 @@ export async function createRouter(
     cacheClient.set(user, tokenSet.access_token, {
       ttl: tokenSet.expires_in ?? 60 * 1000,
     });
+    entityApplicationStorage.saveRefreshTokenForUser(
+      user,
+      tokenSet.refresh_token,
+    );
     response.redirect(continueTo?.toString() ?? frontEndBaseURL);
   });
 
@@ -214,6 +253,83 @@ export async function createRouter(
     }
     const j = await (await getResponse).json();
     response.json(j);
+  });
+
+  router.get('/application/entity/:id', async (request, response) => {
+    const applicatonID =
+      await entityApplicationStorage.getApplicationIDForEntity(
+        request.params.id,
+      );
+    // const entities = await entityApplicationStorage.getAllEntities();
+    if (!applicatonID) {
+      response.status(404);
+      response.json({ message: 'no application mapped' });
+      return;
+    }
+
+    // logger.info('found application: ' + applicatonID);
+    const getResponse = fetch(`${baseURLHub}/applications/${applicatonID}`, {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        Authorization: `Bearer ${response.locals.accessToken}`,
+      },
+      method: 'GET',
+    });
+
+    const status = await (await getResponse).status;
+    if (status !== 200) {
+      response.status(status);
+      response.json({ status: status });
+      return;
+    }
+    const j = await (await getResponse).json();
+    response.json(j);
+  });
+
+  router.get('/entities', async (_, response) => {
+    try {
+      const entities = await entityApplicationStorage.getAllEntities();
+
+      if (entities.length === 0) {
+        response.status(404).json({ message: 'No entities found' });
+        return;
+      }
+
+      logger.info(`Retrieved all entities: ${entities.length} entries found.`);
+
+      response.json(entities);
+    } catch (error) {
+      logger.error('Failed to fetch entities:', error);
+
+      response.status(500).json({ error: 'Failed to fetch entities' });
+    }
+  });
+
+  router.post('/application/entity', async (request, response) => {
+    logger.info(
+      'Received request for /application/entity with body:',
+      request.body,
+    );
+    const { entityID, applicationID } = request.body;
+
+    try {
+      logger.info('Attempting to save:', entityID, applicationID);
+      const res = await entityApplicationStorage.saveApplicationIDForEntity(
+        entityID,
+        applicationID,
+      );
+      if (!res) {
+        logger.error('Failed to save application ID for entity');
+        response.status(500).json({ error: 'Failed to save data' });
+        return;
+      }
+      logger.info('Successfully saved:', entityID, applicationID);
+      response.status(201).json({ entityID, applicationID });
+    } catch (error) {
+      logger.error('Error in /application/entity:', error);
+      response.status(500).json({ error: 'Internal Server Error' });
+    }
   });
 
   router.get('/issues/:id', async (request, response) => {

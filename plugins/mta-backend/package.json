@@ -52,6 +52,6 @@
     "dist",
     "dist-dynamic/*.*",
     "dist-dynamic/dist/**",
-    "migrations/**/*"
+    "migrations/**"
   ]
 }

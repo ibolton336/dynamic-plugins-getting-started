@@ -23,7 +23,6 @@ import {
   SidebarSpace,
   useSidebarOpenState,
   Link,
-  ChatIcon,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
