@@ -37,6 +37,8 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+import { SimpleChatPage } from '@internal/backstage-plugin-simple-chat';
+import { EntityMTAContent } from '@internal/backstage-plugin-mta-frontend';
 
 const app = createApp({
   apis,
@@ -100,6 +102,8 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
+    <Route path="/simple-chat" element={<SimpleChatPage />} />
+    <Route path="/mta" element={<EntityMTAContent />} />
   </FlatRoutes>
 );
 

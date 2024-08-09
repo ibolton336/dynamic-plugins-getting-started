@@ -1,45 +1,3 @@
-#!/bin/bash
-
-# Force script to stop on error
-set -e
-
-# Additional debugging info
-set -x
-
-# Step 1: Delete existing namespace (if it exists)
-oc delete ns local-backstage --wait=true
-
-# Step 2: Install dependencies and build projects
-yarn && yarn run tsc && yarn run build:all
-
-# Step 3: Export and package dynamic plugins
-DYNAMIC_PLUGIN_ROOT_DIR=./deploy
-mkdir -p $DYNAMIC_PLUGIN_ROOT_DIR
-
-echo "Packaging up plugin static assets"
-MTA_BACKEND_INTEGRITY_HASH=$(npm pack plugins/mta-backend/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "mta-backend plugin integrity Hash: $MTA_BACKEND_INTEGRITY_HASH"
-
-MTA_FRONTEND_INTEGRITY_HASH=$(npm pack plugins/mta-frontend/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "mta-frontend plugin integrity Hash: $MTA_FRONTEND_INTEGRITY_HASH"
-
-CATALOG_BACKEND_MODULE_INTEGRITY_HASH=$(npm pack plugins/catalog-backend-module-mta-entity-provider/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "Catalog module plugin integrity Hash: $CATALOG_BACKEND_MODULE_INTEGRITY_HASH"
-
-SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH=$(npm pack plugins/scaffolder-backend-module-mta/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "Scaffolder module plugin integrity Hash: $SCAFFOLDER_BACKEND_MODULE_INTEGRITY_HASH"
-
-SIMPLE_CHAT_INTEGRITY_HASH=$(npm pack plugins/simple-chat/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity')
-echo "Simple chat plugin integrity Hash: $SIMPLE_CHAT_INTEGRITY_HASH"
-
-echo "Plugin .tgz files:"
-ls -l $DYNAMIC_PLUGIN_ROOT_DIR
-
-# Step 6: Recreate namespace
-oc create ns local-backstage
-
-# Step 7: Create the dynamic-plugins-rhdh ConfigMap
-cat <<EOF | oc apply -f -
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -104,9 +62,3 @@ data:
                     menuItem:
                       text: 'Simple Chat'
                       icon: chatIcon
-EOF
-
-# Step 8: Execute additional setup scripts and apply Kubernetes resources
-./02-create-plugin-registry.sh
-oc apply -f app-config-rhdh.yaml
-oc apply -f backstage-operator-cr.yaml
