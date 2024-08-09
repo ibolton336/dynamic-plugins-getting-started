@@ -35,15 +35,19 @@ data:
     dynamicPlugins:
       frontend: 
         internal.backstage-plugin-mta-frontend:
+          entityTabs:
+            - path: /mta
+              title: MTA
+              mountPoint: entity.page.mta
           mountPoints:
-            - mountPoint: entity.page.overview/cards
+            - mountPoint: entity.page.mta/cards
               importName: EntityMTAContent
               config:
                 layout:
-                  gridColumnEnd:
-                    lg: 'span 4'
-                    md: 'span 6'
-                    xs: 'span 12'
+                  gridColumn:
+                    lg: 'span 12'
+                    md: 'span 8'
+                    xs: 'span 6'
                 if:
                   allOf:
                     - isKind: component 
